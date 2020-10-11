@@ -2,6 +2,20 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 
+import dallas from '../images/dallas.webp';
+import austin from '../images/austin.webp';
+import beijing from '../images/beijing.webp';
+import newyork from '../images/newyork.webp';
+import sanfrancisco from '../images/sanfrancisco.webp';
+
+const cities = [
+  { name: 'Dallas', image: dallas },
+  { name: 'Austin', image: austin },
+  { name: 'Beijing', image: beijing },
+  { name: 'New York', image: newyork },
+  { name: 'San Francisco', image: sanfrancisco },
+];
+
 const Hamburger = ({ state }) => {
   // VARS FOR DOM NODES
   let menu = useRef(null);
@@ -77,6 +91,48 @@ const Hamburger = ({ state }) => {
     });
   };
 
+  const handleCity = (city) => {
+    gsap.to(cityBackground, {
+      duration: 0,
+      background: `url(${city}) center center`,
+    });
+    gsap.to(cityBackground, {
+      duration: 4,
+      opacity: 1,
+      ease: 'Power3.inOut',
+    });
+    gsap.to(cityBackground, {
+      duration: 0.4,
+      skewY: 2,
+      transformOrigin: 'right top',
+      ease: 'Power3.inOut',
+    });
+  };
+
+  const handleCityReturn = () => {
+    gsap.to(cityBackground, { duration: 0.4, opacity: 0 });
+  };
+
+  // Hover on the link
+  const handleHover = (e) => {
+    gsap.to(e.target, {
+      duration: 0.3,
+      y: 3,
+      skewX: 4,
+      ease: 'power1.inOut',
+    });
+  };
+
+  // Hover off the link
+  const handleHoverExit = (e) => {
+    gsap.to(e.target, {
+      duration: 0.3,
+      y: -3,
+      skewX: 0,
+      ease: 'power1.inOut',
+    });
+  };
+
   return (
     <div ref={(el) => (menu = el)} className="hamburger-menu">
       <div
@@ -84,24 +140,42 @@ const Hamburger = ({ state }) => {
         className="menu-secondary-background-color"
       ></div>
       <div ref={(el) => (revealMenu = el)} className="menu-layer">
-        <div className="menu-city-background"></div>
+        <div
+          ref={(el) => (cityBackground = el)}
+          className="menu-city-background"
+        ></div>
         <div className="container">
           <div className="wrapper">
             <div className="menu-links">
               <nav>
                 <ul>
                   <li>
-                    <Link ref={(el) => (line1 = el)} to="/opportunities">
+                    <Link
+                      onMouseEnter={(e) => handleHover(e)}
+                      onMouse={(e) => handleHoverExit(e)}
+                      ref={(el) => (line1 = el)}
+                      to="/opportunities"
+                    >
                       Opportunities
                     </Link>
                   </li>
                   <li>
-                    <Link ref={(el) => (line2 = el)} to="/solutions">
+                    <Link
+                      onMouseEnter={(e) => handleHover(e)}
+                      onMouse={(e) => handleHoverExit(e)}
+                      ref={(el) => (line2 = el)}
+                      to="/solutions"
+                    >
                       Solutions
                     </Link>
                   </li>
                   <li>
-                    <Link ref={(el) => (line3 = el)} to="/contact-us">
+                    <Link
+                      onMouseEnter={(e) => handleHover(e)}
+                      onMouse={(e) => handleHoverExit(e)}
+                      ref={(el) => (line3 = el)}
+                      to="/contact-us"
+                    >
                       Contact Us
                     </Link>
                   </li>
@@ -121,11 +195,17 @@ const Hamburger = ({ state }) => {
 
               <div className="locations">
                 Locations:
-                <span>Dallas</span>
-                <span>Austin</span>
-                <span>New York</span>
-                <span>San Francisco</span>
-                <span>Beijing</span>
+                {cities.map((el) => {
+                  return (
+                    <span
+                      key={el.name}
+                      onMouseDown={() => handleCity(el.image)}
+                      onMouseOut={handleCityReturn}
+                    >
+                      {el.name}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>
